@@ -1,0 +1,72 @@
+import arcade
+screen_width = 800
+screen_height = 600
+paddle_width = 400
+paddle_height = 5
+paddle_move_left = False
+paddle_move_right = False
+score = 0
+
+ball_length = 60;
+ball_width = 400;
+ball_length_inc = 2;
+ball_width_inc = 2;
+class pongGame(arcade.Window):
+    def __init__(self,width,height):
+        super().__init__(width,height,"pongGame")
+
+    def on_draw(self):
+        arcade.start_render()
+        arcade.draw_circle_filled(ball_length, ball_width, 20, arcade.color.AMARANTH_PURPLE)
+        arcade.draw_rectangle_filled(paddle_width,paddle_height,90,10,arcade.color.WHITE)
+        arcade.draw_text(f"SCORE : {score}",10,500,arcade.color.WHITE, 25)
+        if ball_width < 10:
+            arcade.draw_text(f"SCORE : {score} GAME OVER", 10, 500, arcade.color.WHITE, 25)
+            arcade.close_window()
+        arcade.finish_render()
+
+
+
+    def on_update(self, delta_time):
+
+        global paddle_width,paddle_move_left,paddle_move_right,ball_width,ball_length,ball_width_inc,ball_length_inc,score
+        if paddle_move_left :
+            paddle_width -= 2
+        if paddle_move_right:
+            paddle_width += 2
+        ball_length += ball_length_inc
+        ball_width += ball_width_inc
+        if ball_length >= 780:
+            ball_length_inc *= -1
+
+        if ball_width >= 580:
+            ball_width_inc *= -1
+
+        if ball_length <= 20:
+            ball_length_inc *= -1
+
+        if ball_width <= 30 and paddle_width-45 <= ball_length <= paddle_width+45:
+            ball_width_inc *= -1
+            score += 1
+
+
+
+    def on_key_press(self, symbol, modifiers):
+        global paddle_move_right,paddle_move_left
+
+        if symbol == arcade.key.LEFT :
+            paddle_move_left = True
+        if symbol == arcade.key.RIGHT :
+            paddle_move_right = True
+
+
+    def on_key_release(self, symbol, modifiers):
+        global paddle_move_right,paddle_move_left
+        if symbol == arcade.key.LEFT :
+            paddle_move_left = False
+        if symbol == arcade.key.RIGHT :
+            paddle_move_right = False
+
+
+game = pongGame(screen_width,screen_height)
+arcade.run()
